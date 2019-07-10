@@ -3,7 +3,6 @@
 #include "ProjectVoodooPlayerController.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Runtime/Engine/Classes/Components/DecalComponent.h"
-#include "HeadMountedDisplayFunctionLibrary.h"
 #include "ProjectVoodooCharacter.h"
 #include "Engine/World.h"
 
@@ -18,9 +17,16 @@ void AProjectVoodooPlayerController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 
 	// keep updating the destination every tick while desired
-	if (bMoveToMouseCursor)
+	/*if (bMoveToMouseCursor)
 	{
 		MoveToMouseCursor();
+	}*/
+
+	if (!currentVelocity.IsNearlyZero())
+	{
+		FVector NewLocation = GetPawn()->GetActorLocation() + (currentVelocity * DeltaTime);
+		
+		GetPawn()->AddMovementInput(currentVelocity);
 	}
 }
 
@@ -32,41 +38,24 @@ void AProjectVoodooPlayerController::SetupInputComponent()
 	InputComponent->BindAction("SetDestination", IE_Pressed, this, &AProjectVoodooPlayerController::OnSetDestinationPressed);
 	InputComponent->BindAction("SetDestination", IE_Released, this, &AProjectVoodooPlayerController::OnSetDestinationReleased);
 
+	InputComponent->BindAxis("MoveForward", this, &AProjectVoodooPlayerController::OnUpKeyPressed);
+	InputComponent->BindAxis("MoveRight", this, &AProjectVoodooPlayerController::OnRightKeyPressed);
+
 	// support touch devices 
 	InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AProjectVoodooPlayerController::MoveToTouchLocation);
 	InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AProjectVoodooPlayerController::MoveToTouchLocation);
-
-	InputComponent->BindAction("ResetVR", IE_Pressed, this, &AProjectVoodooPlayerController::OnResetVR);
-}
-
-void AProjectVoodooPlayerController::OnResetVR()
-{
-	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 }
 
 void AProjectVoodooPlayerController::MoveToMouseCursor()
 {
-	if (UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled())
-	{
-		if (AProjectVoodooCharacter* MyPawn = Cast<AProjectVoodooCharacter>(GetPawn()))
-		{
-			if (MyPawn->GetCursorToWorld())
-			{
-				UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, MyPawn->GetCursorToWorld()->GetComponentLocation());
-			}
-		}
-	}
-	else
-	{
-		// Trace to see what is under the mouse cursor
-		FHitResult Hit;
-		GetHitResultUnderCursor(ECC_Visibility, false, Hit);
+	// Trace to see what is under the mouse cursor
+	FHitResult Hit;
+	GetHitResultUnderCursor(ECC_Visibility, false, Hit);
 
-		if (Hit.bBlockingHit)
-		{
-			// We hit something, move there
-			SetNewMoveDestination(Hit.ImpactPoint);
-		}
+	if (Hit.bBlockingHit)
+	{
+		// We hit something, move there
+		SetNewMoveDestination(Hit.ImpactPoint);
 	}
 }
 
@@ -109,4 +98,14 @@ void AProjectVoodooPlayerController::OnSetDestinationReleased()
 {
 	// clear flag to indicate we should stop updating the destination
 	bMoveToMouseCursor = false;
+}
+
+void AProjectVoodooPlayerController::OnUpKeyPressed(float AxisValue)
+{
+	currentVelocity.X = FMath::Clamp(AxisValue, -1.0f, 1.0f) * speed;
+}
+
+void AProjectVoodooPlayerController::OnRightKeyPressed(float AxisValue)
+{
+	currentVelocity.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f) * speed;
 }

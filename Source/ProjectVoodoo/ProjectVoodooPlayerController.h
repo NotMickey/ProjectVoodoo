@@ -14,6 +14,9 @@ class AProjectVoodooPlayerController : public APlayerController
 public:
 	AProjectVoodooPlayerController();
 
+	UPROPERTY(BlueprintReadWrite)
+		float speed = 200.0f;
+
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
@@ -22,9 +25,6 @@ protected:
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
 	// End PlayerController interface
-
-	/** Resets HMD orientation in VR. */
-	void OnResetVR();
 
 	/** Navigate player to the current mouse cursor location. */
 	void MoveToMouseCursor();
@@ -38,6 +38,13 @@ protected:
 	/** Input handlers for SetDestination action. */
 	void OnSetDestinationPressed();
 	void OnSetDestinationReleased();
+
+	/** Input handlers for WSAD controls*/
+	void OnUpKeyPressed(float AxisValue);
+	void OnRightKeyPressed(float AxisValue);
+
+private:
+	FVector currentVelocity = FVector::ZeroVector;
 };
 
 
