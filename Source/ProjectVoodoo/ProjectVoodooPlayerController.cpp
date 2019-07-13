@@ -3,6 +3,8 @@
 #include "ProjectVoodooPlayerController.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Runtime/Engine/Classes/Components/DecalComponent.h"
+#include "Runtime/Core/Public/Math/Rotator.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "ProjectVoodooCharacter.h"
 #include "Engine/World.h"
 
@@ -22,12 +24,12 @@ void AProjectVoodooPlayerController::PlayerTick(float DeltaTime)
 		MoveToMouseCursor();
 	}*/
 
-	if (!currentVelocity.IsNearlyZero())
+	/*if (!currentVelocity.IsNearlyZero())
 	{
 		FVector NewLocation = GetPawn()->GetActorLocation() + (currentVelocity * DeltaTime);
-		
+
 		GetPawn()->AddMovementInput(currentVelocity);
-	}
+	}*/
 }
 
 void AProjectVoodooPlayerController::SetupInputComponent()
@@ -102,10 +104,20 @@ void AProjectVoodooPlayerController::OnSetDestinationReleased()
 
 void AProjectVoodooPlayerController::OnUpKeyPressed(float AxisValue)
 {
-	currentVelocity.X = FMath::Clamp(AxisValue, -1.0f, 1.0f) * speed;
+	//currentVelocity.X = FMath::Clamp(AxisValue, -1.0f, 1.0f) * speed;
+
+	FRotator up = FRotator(0.0f, 0.0f, GetPawn()->GetControlRotation().Yaw);
+
+	GetPawn()->AddMovementInput(UKismetMathLibrary::GetForwardVector(up), AxisValue);
 }
 
 void AProjectVoodooPlayerController::OnRightKeyPressed(float AxisValue)
 {
-	currentVelocity.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f) * speed;
+	//currentVelocity.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f) * speed;
+
+	FRotator right = FRotator(0.0f, 0.0f, GetPawn()->GetControlRotation().Yaw);
+
+	GetPawn()->AddMovementInput(UKismetMathLibrary::GetRightVector(right), AxisValue);
+
+	
 }
