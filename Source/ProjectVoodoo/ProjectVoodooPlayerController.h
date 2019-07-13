@@ -44,7 +44,9 @@ protected:
 	void OnRightKeyPressed(float AxisValue);
 
 private:
-	FVector currentVelocity = FVector::ZeroVector;
+	FVector CurrentVelocity = FVector::ZeroVector;
+	FRotator Up = FRotator::ZeroRotator;
+	FRotator Right = FRotator::ZeroRotator;
 };
 
 

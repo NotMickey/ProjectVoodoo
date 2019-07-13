@@ -24,12 +24,24 @@ void AProjectVoodooPlayerController::PlayerTick(float DeltaTime)
 		MoveToMouseCursor();
 	}*/
 
-	/*if (!currentVelocity.IsNearlyZero())
-	{
-		FVector NewLocation = GetPawn()->GetActorLocation() + (currentVelocity * DeltaTime);
+	FHitResult Hit;
+	GetHitResultUnderCursor(ECC_Camera, false, Hit);
 
-		GetPawn()->AddMovementInput(currentVelocity);
-	}*/
+	FRotator PawnRotation = GetPawn()->GetActorRotation();
+
+	FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(GetPawn()->GetActorLocation(), Hit.ImpactPoint);
+	FRotator TargetRotation = FRotator(0.0f, Rotation.Yaw, 0.0f);
+
+	GetPawn()->SetActorRotation(UKismetMathLibrary::RInterpTo(PawnRotation, TargetRotation, 0.5f, 0.5f));
+
+	if (!CurrentVelocity.IsNearlyZero())
+	{
+		Up = FRotator(0.0f, 0.0f, GetPawn()->GetControlRotation().Yaw);
+		GetPawn()->AddMovementInput(UKismetMathLibrary::GetForwardVector(Up), CurrentVelocity.X);
+
+		Right = FRotator(0.0f, 0.0f, GetPawn()->GetControlRotation().Yaw);
+		GetPawn()->AddMovementInput(UKismetMathLibrary::GetRightVector(Right), CurrentVelocity.Y);
+	}
 }
 
 void AProjectVoodooPlayerController::SetupInputComponent()
@@ -104,20 +116,10 @@ void AProjectVoodooPlayerController::OnSetDestinationReleased()
 
 void AProjectVoodooPlayerController::OnUpKeyPressed(float AxisValue)
 {
-	//currentVelocity.X = FMath::Clamp(AxisValue, -1.0f, 1.0f) * speed;
-
-	FRotator up = FRotator(0.0f, 0.0f, GetPawn()->GetControlRotation().Yaw);
-
-	GetPawn()->AddMovementInput(UKismetMathLibrary::GetForwardVector(up), AxisValue);
+	CurrentVelocity.X = FMath::Clamp(AxisValue, -1.0f, 1.0f) * speed;
 }
 
 void AProjectVoodooPlayerController::OnRightKeyPressed(float AxisValue)
 {
-	//currentVelocity.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f) * speed;
-
-	FRotator right = FRotator(0.0f, 0.0f, GetPawn()->GetControlRotation().Yaw);
-
-	GetPawn()->AddMovementInput(UKismetMathLibrary::GetRightVector(right), AxisValue);
-
-	
+	CurrentVelocity.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f) * speed;
 }
