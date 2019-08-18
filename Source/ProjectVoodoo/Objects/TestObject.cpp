@@ -2,6 +2,7 @@
 
 
 #include "TestObject.h"
+
 #include "Runtime/Engine/Classes/Engine/Engine.h"
 
 ATestObject::ATestObject()
@@ -14,7 +15,7 @@ void ATestObject::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OnInteract();
+	//OnInteract();
 }
 
 void ATestObject::Tick(float DeltaTime)
@@ -25,11 +26,13 @@ void ATestObject::Tick(float DeltaTime)
 void ATestObject::OnInteract()
 {
 	// Any logic that does not need to be set up in Blueprints should go here.
+
+	// Called to run Blueprint implemented logic
 	OnInteractBP();
 }
 
 void ATestObject::OnInteractBP_Implementation()
 {
 	// Any default implementation goes here
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, "Calling the defualt because no BP implementation found!!");
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, "Calling the default because no BP implementation found!!");
 }

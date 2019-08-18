@@ -7,10 +7,11 @@
 #include "ObjectBase.generated.h"
 
 UENUM(BlueprintType)
-enum ObjectName
+enum ObjectType
 {
 	Enum_Item1 UMETA(DisplayName = "Item1"),
 	Enum_Item2 UMETA(DisplayName = "Item2"),
+	Enum_Item3 UMETA(DisplayName = "Item3"),
 };
 
 UCLASS(Abstract)
@@ -33,6 +34,9 @@ public:
 	// Handle any code specific logic/calculations here
 	virtual void OnInteract() {};
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object")
-		TEnumAsByte<ObjectName> objectName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object Properties")
+		TEnumAsByte<ObjectType> objectType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object Properties")
+		float interactionDistance = 175.0f;
 };

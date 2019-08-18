@@ -30,6 +30,9 @@ protected:
 	void OnUpKeyPressed(float AxisValue);
 	void OnRightKeyPressed(float AxisValue);
 
+	/** Input handlers for mouse controls*/
+	void OnInteractKeyPressed();
+
 private:
 	FVector CurrentVelocity = FVector::ZeroVector;
 	FRotator Up = FRotator::ZeroRotator;

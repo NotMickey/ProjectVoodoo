@@ -8,6 +8,8 @@
 #include "ProjectVoodooCharacter.h"
 #include "Engine/World.h"
 
+#include "Objects/ObjectBase.h"
+
 AProjectVoodooPlayerController::AProjectVoodooPlayerController()
 {
 	bShowMouseCursor = true;
@@ -22,7 +24,6 @@ void AProjectVoodooPlayerController::PlayerTick(float DeltaTime)
 	GetHitResultUnderCursor(ECC_Camera, false, Hit);
 
 	FRotator PawnRotation = GetPawn()->GetActorRotation();
-
 	FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(GetPawn()->GetActorLocation(), Hit.ImpactPoint);
 	FRotator TargetRotation = FRotator(0.0f, Rotation.Yaw, 0.0f);
 
@@ -45,6 +46,8 @@ void AProjectVoodooPlayerController::SetupInputComponent()
 
 	InputComponent->BindAxis("MoveForward", this, &AProjectVoodooPlayerController::OnUpKeyPressed);
 	InputComponent->BindAxis("MoveRight", this, &AProjectVoodooPlayerController::OnRightKeyPressed);
+
+	InputComponent->BindAction("Interact", IE_Released, this, &AProjectVoodooPlayerController::OnInteractKeyPressed);
 }
 
 void AProjectVoodooPlayerController::OnUpKeyPressed(float AxisValue)
@@ -55,4 +58,20 @@ void AProjectVoodooPlayerController::OnUpKeyPressed(float AxisValue)
 void AProjectVoodooPlayerController::OnRightKeyPressed(float AxisValue)
 {
 	CurrentVelocity.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f) * speed;
+}
+
+void AProjectVoodooPlayerController::OnInteractKeyPressed()
+{
+	FHitResult Hit;
+	GetHitResultUnderCursor(ECC_Camera, false, Hit);
+
+	AActor* hitActor = Hit.GetActor();
+
+	if (hitActor->IsA(AObjectBase::StaticClass()))
+	{
+		AObjectBase* object = Cast<AObjectBase>(hitActor);
+
+		if (GetPawn()->GetDistanceTo(object) <= object->interactionDistance)
+			object->OnInteract();
+	}
 }
