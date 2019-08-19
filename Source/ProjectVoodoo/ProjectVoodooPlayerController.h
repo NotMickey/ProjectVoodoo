@@ -26,12 +26,22 @@ protected:
 	virtual void SetupInputComponent() override;
 	// End PlayerController interface
 
+	/** Navigate player to the current mouse cursor location. */
+	void MoveToMouseCursor();
+
+	/** Navigate player to the current touch location. */
+	void MoveToTouchLocation(const ETouchIndex::Type FingerIndex, const FVector Location);
+	
+	/** Navigate player to the given world location. */
+	void SetNewMoveDestination(const FVector DestLocation);
+
+	/** Input handlers for SetDestination action. */
+	void OnSetDestinationPressed();
+	void OnSetDestinationReleased();
+
 	/** Input handlers for WSAD controls*/
 	void OnUpKeyPressed(float AxisValue);
 	void OnRightKeyPressed(float AxisValue);
-
-	/** Input handlers for mouse controls*/
-	void OnInteractKeyPressed();
 
 private:
 	FVector CurrentVelocity = FVector::ZeroVector;
