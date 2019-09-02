@@ -48,6 +48,9 @@ void AProjectVoodooPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("MoveRight", this, &AProjectVoodooPlayerController::OnRightKeyPressed);
 
 	InputComponent->BindAction("Interact", IE_Released, this, &AProjectVoodooPlayerController::OnInteractKeyPressed);
+
+	InputComponent->BindAction("Action", IE_Pressed, this, &AProjectVoodooPlayerController::OnActionKeyPressed);
+	InputComponent->BindAction("Action", IE_Released, this, &AProjectVoodooPlayerController::OnActionKeyReleased);
 }
 
 void AProjectVoodooPlayerController::OnUpKeyPressed(float AxisValue)
@@ -73,5 +76,25 @@ void AProjectVoodooPlayerController::OnInteractKeyPressed()
 
 		if (GetPawn()->GetDistanceTo(object) <= object->interactionDistance)
 			object->OnInteract();
+	}
+}
+
+void AProjectVoodooPlayerController::OnActionKeyPressed()
+{
+	ACharacter * basePlayer = GetCharacter();
+
+	if (AProjectVoodooCharacter * player = Cast<AProjectVoodooCharacter>(basePlayer))
+	{
+		player->OnActionKeyPressed();
+	}
+}
+
+void AProjectVoodooPlayerController::OnActionKeyReleased()
+{
+	ACharacter * basePlayer = GetCharacter();
+
+	if (AProjectVoodooCharacter * player = Cast<AProjectVoodooCharacter>(basePlayer))
+	{
+		player->OnActionKeyReleased();
 	}
 }

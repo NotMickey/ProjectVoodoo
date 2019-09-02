@@ -24,6 +24,11 @@ public:
 	/** Returns CursorToWorld subobject **/
 	FORCEINLINE class UDecalComponent* GetCursorToWorld() { return CursorToWorld; }
 
+	/** Returns currently equipped weapon */
+	FORCEINLINE class UWeaponBase* GetEquippedWeapon() { return equippedWeapon; }
+	/** Returns currently equipped weapon */
+	FORCEINLINE class UWeaponBase* GetAlternateWeapon() { return alternateWeapon; }
+
 private:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -37,7 +42,20 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
 
-public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Weapons", meta = (AllowPrivateAccess = "true"))
+	class UWeaponBase* equippedWeapon;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Weapons", meta = (AllowPrivateAccess = "true"))
+	class UWeaponBase* alternateWeapon;
+
+public:
+	void OnActionKeyPressed();
+	void OnActionKeyReleased();
+
+private:
+	UFUNCTION()
+	void ReloadWeapon();
+	UFUNCTION()
+	void FireWeapon();
 };
 

@@ -32,6 +32,8 @@ protected:
 
 	/** Input handlers for mouse controls*/
 	void OnInteractKeyPressed();
+	void OnActionKeyPressed();
+	void OnActionKeyReleased();
 
 private:
 	FVector CurrentVelocity = FVector::ZeroVector;

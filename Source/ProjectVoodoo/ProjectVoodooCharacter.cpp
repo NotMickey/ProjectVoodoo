@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Weapons/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -73,4 +74,28 @@ void AProjectVoodooCharacter::Tick(float DeltaSeconds)
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
 	}
+}
+
+void AProjectVoodooCharacter::OnActionKeyPressed()
+{
+	ReloadWeapon();
+}
+
+void AProjectVoodooCharacter::OnActionKeyReleased()
+{
+	FireWeapon();
+}
+
+void AProjectVoodooCharacter::ReloadWeapon()
+{
+	// Reload weapon!
+	if (equippedWeapon != nullptr)
+		equippedWeapon->OnBeginReload();
+}
+
+void AProjectVoodooCharacter::FireWeapon()
+{
+	// Fire Weapon!
+	if (equippedWeapon != nullptr)
+		equippedWeapon->FireWeapon();
 }
