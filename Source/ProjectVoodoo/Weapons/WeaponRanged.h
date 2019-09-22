@@ -10,7 +10,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class PROJECTVOODOO_API UWeaponRanged : public UWeaponBase
 {
 	GENERATED_BODY()
@@ -35,7 +35,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void OnReloadWeaponBP();
 
-	UPROPERTY(BlueprintReadWrite, Category = "Weapon Properties")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Properties")
 	bool canReload = false;
 
 	UPROPERTY(BlueprintReadOnly)

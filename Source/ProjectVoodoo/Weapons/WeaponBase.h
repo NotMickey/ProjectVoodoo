@@ -15,7 +15,7 @@ enum WeaponType
 	Enum_Item3 UMETA(DisplayName = "Unarmed"),
 };
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(abstract)
 class PROJECTVOODOO_API UWeaponBase : public UActorComponent
 {
 	GENERATED_BODY()
